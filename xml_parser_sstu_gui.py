@@ -1,3 +1,4 @@
+import os
 import sys
 import xml.etree.ElementTree as ET
 import openpyxl
@@ -108,21 +109,25 @@ class WindowMain(PyQt5.QtWidgets.QMainWindow):
         if self.text_empty_path_file not in self.label_path_file.text():
             self.pushButton_parse_to_xls.setEnabled(True)
 
+    # функция преобразования xml в xls
     def parse_xml(self):
-        print('парсим')
-
+        # получение пути и имени выбранного файла
         file_xml = self.label_path_file.text()
-        print(f'{file_xml = }')
+        file_xml_path = os.path.split(file_xml)[0]
+        file_xml_name = os.path.split(file_xml)[1]
 
-        file_xls = 'guid.xlsx'
-        list_xml = []
+        # создание названия выходного файла xls
+        file_xls_name = os.path.join(file_xml_path, os.path.splitext(file_xml_name)[0] + '.xlsx')
+        # os.path.abspath(name_file)
+        # file_xls_name = os.path.normcase(os.path.join(file_xml_path, os.path.splitext(file_xml_name)[0] + '.xlsx'))
+        # file_xls_name = 'guid.xlsx'
 
         wb = openpyxl.Workbook()
         wb_s = wb.active
 
         wb_s.append(["ID", "Name"])
 
-        root_node = ET.parse(file_xml).getroot()
+        root_node = ET.parse(self.label_path_file.text()).getroot()
 
         for tag in root_node.findall('Department'):
             id_value = tag.get('ID')
@@ -137,7 +142,7 @@ class WindowMain(PyQt5.QtWidgets.QMainWindow):
 
             wb_s.append([id_value, name_value])
 
-        wb.save(file_xls)
+        wb.save(file_xls_name)
         wb.close()
 
     # событие - нажатие на кнопку Выход
