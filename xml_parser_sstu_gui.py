@@ -16,6 +16,7 @@ class WindowMain(PyQt5.QtWidgets.QMainWindow):
         # переменные
         self.info_extention_open_file_xml = 'Файлы XML (*.xml)'
         self.info_path_open_file = None
+        self.text_empty_path_file = 'файл пока не выбран'
 
         # главное окно, надпись на нём и размеры
         self.setWindowTitle('Парсер xml файлов для ССТУ')
@@ -47,7 +48,7 @@ class WindowMain(PyQt5.QtWidgets.QMainWindow):
         self.label_path_file = PyQt5.QtWidgets.QLabel(self)
         self.label_path_file.setObjectName('label_path_file')
         self.label_path_file.setEnabled(False)
-        self.label_path_file.setText('')
+        self.label_path_file.setText(self.text_empty_path_file)
         self.label_path_file.setGeometry(PyQt5.QtCore.QRect(10, 70, 400, 40))
         font = PyQt5.QtGui.QFont()
         font.setPointSize(12)
@@ -94,33 +95,25 @@ class WindowMain(PyQt5.QtWidgets.QMainWindow):
         # выбор только пути файла из data_of_open_file_name
         file_name = data_of_open_file_name[0]
 
-        # # нажата кнопка выбора XLS файла
-        # if self.sender().objectName() == self.toolButton_select_xls_file.objectName():
-        #     if file_name == '':
-        #         self.label_path_xls_file.setText(old_path_of_selected_xls_file)
-        #         self.label_path_xls_file.adjustSize()
-        #     else:
-        #         old_path_of_selected_xls_file = self.label_path_xls_file.text()
-        #         self.label_path_xls_file.setText(file_name)
-        #         self.label_path_xls_file.adjustSize()
-        #
-        # # активация и деактивация объектов на форме зависящее от 'выбраны ли все файлы' и 'они разные'
-        # if self.text_empty_path_file not in (self.label_path_html_file.text(), self.label_path_xls_file.text()):
-        #     self.pushButton_send_mail.setEnabled(True)
-        #     self.pushButton_send_test_mail.setEnabled(True)
-        #     self.lineEdit_subject_letter.setEnabled(True)
+        # нажата кнопка выбора XML файла
+        if file_name == '':
+            self.label_path_file.setText(old_path_of_selected_xml_file)
+            self.label_path_file.adjustSize()
+        else:
+            old_path_of_selected_xml_file = self.label_path_file.text()
+            self.label_path_file.setText(file_name)
+            self.label_path_file.adjustSize()
 
-
-
-
-
-
-
-
-
+        # активация и деактивация объектов на форме зависящее от выбора файла
+        if self.text_empty_path_file not in self.label_path_file.text():
+            self.pushButton_parse_to_xls.setEnabled(True)
 
     def parse_xml(self):
-        file_xml = 'guid.xml'
+        print('парсим')
+
+        file_xml = self.label_path_file.text()
+        print(f'{file_xml = }')
+
         file_xls = 'guid.xlsx'
         list_xml = []
 
