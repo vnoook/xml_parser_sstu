@@ -1,11 +1,12 @@
 import os
 import sys
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as EtXML
 import openpyxl
 import PyQt5
 import PyQt5.QtWidgets
 import PyQt5.QtCore
 import PyQt5.QtGui
+
 
 # класс главного окна
 class WindowMain(PyQt5.QtWidgets.QMainWindow):
@@ -18,9 +19,10 @@ class WindowMain(PyQt5.QtWidgets.QMainWindow):
         self.info_extention_open_file_xml = 'Файлы XML (*.xml)'
         self.info_path_open_file = None
         self.text_empty_path_file = 'файл пока не выбран'
+        self.info_for_open_file = 'Выберите XML файл (.XML)'
 
         # главное окно, надпись на нём и размеры
-        self.setWindowTitle('Парсер xml файлов для ССТУ')
+        self.setWindowTitle('Парсер XML файлов для ССТУ')
         self.setGeometry(450, 100, 700, 180)
         self.setWindowFlags(PyQt5.QtCore.Qt.WindowStaysOnTopHint)
 
@@ -85,8 +87,6 @@ class WindowMain(PyQt5.QtWidgets.QMainWindow):
         # запоминание старого значения пути выбора файлов
         old_path_of_selected_xml_file = self.label_path_file.text()
 
-        # открытие окна выбора файла
-        self.info_for_open_file = 'Выберите XML файл (.XML)'
         # непосредственное окно выбора файла и переменная для хранения пути файла
         data_of_open_file_name = PyQt5.QtWidgets.QFileDialog.getOpenFileName(self,
                                                                              self.info_for_open_file,
@@ -129,7 +129,7 @@ class WindowMain(PyQt5.QtWidgets.QMainWindow):
         wb_s.append(["ID", "Name"])
 
         # чтение корня xml файла
-        root_node = ET.parse(self.label_path_file.text()).getroot()
+        root_node = EtXML.parse(self.label_path_file.text()).getroot()
 
         # поиск конкретных записей в ветках дерева
         for tag in root_node.findall('Department'):
@@ -143,7 +143,7 @@ class WindowMain(PyQt5.QtWidgets.QMainWindow):
                 name_value = 'UNKNOWN DATA'
                 # print(name_value)
 
-            # добавление найденой строки на лист
+            # добавление найденной строки на лист
             wb_s.append([id_value, name_value])
 
         # сохранение файла xls и закрытие его
