@@ -117,33 +117,42 @@ class WindowMain(PyQt5.QtWidgets.QMainWindow):
         file_xml_name = os.path.split(file_xml)[1]
 
         # создание названия выходного файла xls
-        file_xls_name = os.path.join(file_xml_path, os.path.splitext(file_xml_name)[0] + '.xlsx')
-        # os.path.abspath(name_file)
-        # file_xls_name = os.path.normcase(os.path.join(file_xml_path, os.path.splitext(file_xml_name)[0] + '.xlsx'))
-        # file_xls_name = 'guid.xlsx'
+        file_xls_path = file_xml_path[:]
+        file_xls_name = os.path.splitext(file_xml_name)[0] + '.xlsx'
+        file_xls = os.path.abspath(os.path.join(file_xls_path, file_xls_name))
 
+        # создание книги xls и активация рабочего листа
         wb = openpyxl.Workbook()
         wb_s = wb.active
 
+        # добавление первой строки как шапки
         wb_s.append(["ID", "Name"])
 
+        # чтение корня xml файла
         root_node = ET.parse(self.label_path_file.text()).getroot()
 
+        # поиск конкретных записей в ветках дерева
         for tag in root_node.findall('Department'):
             id_value = tag.get('ID')
             if not id_value:
                 id_value = 'UNKNOWN DATA'
-                print(id_value)
+                # print(id_value)
 
             name_value = tag.get('Name')
             if not name_value:
                 name_value = 'UNKNOWN DATA'
-                print(name_value)
+                # print(name_value)
 
+            # добавление найденой строки на лист
             wb_s.append([id_value, name_value])
 
-        wb.save(file_xls_name)
+        # сохранение файла xls и закрытие его
+        wb.save(file_xls)
         wb.close()
+
+        # открытие папки с сохранённым файлом xls
+        fullpath = os.path.abspath(file_xls_path)
+        PyQt5.QtGui.QDesktopServices.openUrl(PyQt5.QtCore.QUrl.fromLocalFile(fullpath))
 
     # событие - нажатие на кнопку Выход
     @staticmethod
